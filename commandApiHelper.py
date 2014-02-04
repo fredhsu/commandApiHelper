@@ -9,9 +9,9 @@ urlString = "https://{}:{}@{}/command-api".format(username, password, switchIP)
 switch = Server( urlString )
 class Interface:
     """ Ethernet Interface """
-    def __init__(self, name=""):
+    def __init__(self, name="", attributes = {}):
         self.name = name
-        self.attributes = []
+        self.attributes = attributes
 
     def setIpAddress(self, ipAddr):
         # could check if routed port, raise error or proceed
@@ -26,6 +26,7 @@ class Interface:
 
     def setTrunk(self):
         # Change mode to trunk
+        print response
 
         
 class AristaSwitch:
@@ -45,9 +46,11 @@ d = namedtuple('Version', response[0].keys())(*response[0].values())
 print d
 response = switch.runCmds( 1, ["show interfaces"] )
 print "---"
-#print response[0]
+print response[0]["interfaces"]["Ethernet1"]
 #for key, value in response[0]["interfaces"].iteritems():
 #    print key 
 #    print value
-iface = Interface()
+intName = "Ethernet1"
+iface = Interface(intName, response[0]["interfaces"][intName])
 iface.setIpAddress("1.1.1.1/24")
+print iface.attributes["interfaceAddress"][0]["primaryIp"]
